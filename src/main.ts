@@ -1,6 +1,7 @@
 import cors from 'cors';
 import 'dotenv/config';
 import express, { NextFunction, Request, Response } from 'express';
+import bearerToken from 'express-bearer-token';
 import http from 'http';
 import pinoHttp from 'pino-http';
 
@@ -17,6 +18,13 @@ const main = async () => {
   app.set('trust proxy', 1);
   app.use(pinoHttpMiddleware);
   app.use(express.json());
+
+  // Extract token middleware
+  app.use(
+    bearerToken({
+      headerKey: 'Bearer',
+    })
+  );
 
   app.use('/api', router);
 
