@@ -6,7 +6,9 @@ const prisma = new PrismaClient();
 const seedUser = async () => {
   await prisma.appUser.create({
     data: {
-      name: 'Minh Nguyen',
+      firstName: 'Minh',
+      lastName: 'Nguyen',
+      email: 'minhlucky@gmail.com',
       username: 'minh',
       password: '123456',
     },
