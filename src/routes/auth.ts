@@ -7,5 +7,6 @@ const router = Router();
 
 router.post('/register', asyncHandler(authController.registerHandler));
 router.post('/login', asyncHandler(authController.loginHandler));
+router.get('/verify', asyncHandler(authController.verifyHandler));
 
 export { router as authRouter };
