@@ -38,6 +38,7 @@ export const login = async (payload: LoginPayload) => {
   // Sign an access token with payload
   const accessToken = jwt.sign(
     {
+      id: user.id,
       username,
       email: user.email,
       firstName: user.firstName,
