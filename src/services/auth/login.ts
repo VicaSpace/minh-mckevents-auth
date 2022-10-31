@@ -1,6 +1,8 @@
 import { AppUser } from '@prisma/client';
 import createHttpError from 'http-errors';
+import * as jwt from 'jsonwebtoken';
 
+import config from '@/config';
 import { prisma } from '@/db';
 
 interface LoginPayload {
@@ -9,9 +11,9 @@ interface LoginPayload {
 }
 
 /**
- * Register a User
+ * Login a User with provided credentials
  * @param payload Payload
- * @returns Registered User
+ * @returns Access Token
  */
 export const login = async (payload: LoginPayload) => {
   const { username, password } = payload;
@@ -25,13 +27,27 @@ export const login = async (payload: LoginPayload) => {
       },
     });
   } catch (_err) {
-    throw createHttpError(403, 'Cannot login, invalid credentials.');
+    throw createHttpError(403, 'Cannot login, invalid username.');
   }
 
-  // Compare password
+  // Verify password
   if (user.password !== password) {
-    throw createHttpError(403, 'Cannot login, invalid credentials');
+    throw createHttpError(403, 'Cannot login, invalid password.');
   }
 
-  // Sign a payload
+  // Sign an access token with payload
+  const accessToken = jwt.sign(
+    {
+      username,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    },
+    config.jwt.secret,
+    {
+      expiresIn: config.jwt.expireHours,
+    }
+  );
+
+  return accessToken;
 };
